@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://cipx62nqt4kea"]
+
+[ext_resource type="Script" uid="uid://b6b15nt342fr1" path="res://day_popup.gd" id="1_sykk7"]
+[ext_resource type="Texture2D" uid="uid://dtj7oukybhwgr" path="res://SpriteStack_Cars/BrownMotorcycle.png" id="2_hqsgk"]
+
+[node name="DayPopup" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_sykk7")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 566.0
+offset_top = 280.0
+offset_right = 653.0
+offset_bottom = 346.0
+text = "Day"
+
+[node name="BrownMotorcycle" type="Sprite2D" parent="."]
+position = Vector2(9008, 24)
+scale = Vector2(117.75, 641.75)
+texture = ExtResource("2_hqsgk")

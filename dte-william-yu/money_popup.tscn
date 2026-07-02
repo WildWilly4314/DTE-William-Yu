@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://srbxqmvya0um"]
+
+[ext_resource type="Script" uid="uid://br8u4m45rbu5w" path="res://money_popup.gd" id="1_d3o7w"]
+
+[node name="MoneyPopup" type="Node2D"]
+script = ExtResource("1_d3o7w")
+
+[node name="+$20" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0

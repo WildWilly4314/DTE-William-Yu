@@ -1,0 +1,130 @@
+[gd_scene load_steps=14 format=3 uid="uid://bsdsyv3faro0w"]
+
+[ext_resource type="Script" uid="uid://b3lsi3o7ftakl" path="res://tractor.gd" id="1_663fx"]
+[ext_resource type="Texture2D" uid="uid://ulgej4fwuxbr" path="res://Green_BOXTRUCK_CLEAN_8D_000-sheet.png" id="1_aay1t"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_80l56"]
+radius = 37.0
+height = 74.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_663fx"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(0, 140, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_80l56"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(140, 0, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wm41u"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(280, 0, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8aiwu"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(140, 140, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x8gov"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(0, 0, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pwdsc"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(280, 140, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bf0jo"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(140, 280, 140, 140)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cdwys"]
+atlas = ExtResource("1_aay1t")
+region = Rect2(0, 280, 140, 140)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_62euu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_663fx")
+}],
+"loop": true,
+"name": &"bottom_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_80l56")
+}],
+"loop": true,
+"name": &"bottom_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wm41u")
+}],
+"loop": true,
+"name": &"down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8aiwu")
+}],
+"loop": true,
+"name": &"left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8gov")
+}],
+"loop": true,
+"name": &"right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pwdsc")
+}],
+"loop": true,
+"name": &"top_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bf0jo")
+}],
+"loop": true,
+"name": &"top_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cdwys")
+}],
+"loop": true,
+"name": &"up",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_663fx"]
+radius = 61.0082
+
+[node name="Tractor" type="CharacterBody2D"]
+script = ExtResource("1_663fx")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_80l56")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_62euu")
+animation = &"bottom_left"
+
+[node name="EnterZone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnterZone"]
+shape = SubResource("CircleShape2D_663fx")
+
+[connection signal="body_entered" from="EnterZone" to="." method="_on_enter_zone_body_entered"]
+[connection signal="body_exited" from="EnterZone" to="." method="_on_enter_zone_body_exited"]
