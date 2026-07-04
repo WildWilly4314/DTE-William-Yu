@@ -80,6 +80,12 @@ func die():
 	
 	get_tree().get_root().get_node("Game").add_money(money_value)
 	
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	print("Tractor found: ", tractor)
+	if tractor:
+		print("Calling hit_by_vegetable, break chance: ", tractor.BREAK_CHANCE_ON_HIT)
+		tractor.hit_by_vegetable()
+	
 	var popup = popup_scene.instantiate()
 	popup.global_position = global_position + Vector2(0, -30)
 	get_parent().add_child(popup)

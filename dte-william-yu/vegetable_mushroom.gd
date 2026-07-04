@@ -5,7 +5,7 @@ const FLEE_RADIUS = 200.0
 const WANDER_SPEED = 60.0
 const WANDER_CHANGE_TIME = 2.0
 
-@export var money_value = 20
+@export var money_value = 30
 @export var flee_speed = 120.0
 
 var player = null
@@ -79,6 +79,12 @@ func die():
 	$AnimatedSprite2D.play("explosion")
 	
 	get_tree().get_root().get_node("Game").add_money(money_value)
+	
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	print("Tractor found: ", tractor)
+	if tractor:
+		print("Calling hit_by_vegetable, break chance: ", tractor.BREAK_CHANCE_ON_HIT)
+		tractor.hit_by_vegetable()
 	
 	var popup = popup_scene.instantiate()
 	popup.global_position = global_position + Vector2(0, -30)

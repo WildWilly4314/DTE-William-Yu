@@ -1,11 +1,13 @@
 extends CharacterBody2D
 
-const SPEED = 100
+const SPEED = 150
 var nearby_truck = null
 var in_truck = false
 
 func _physics_process(delta):
 	if in_truck:
+		if nearby_truck == null or not nearby_truck.player_inside:
+			in_truck = false
 		return
 	
 	var input = Vector2.ZERO
@@ -35,8 +37,11 @@ func update_animation(dir: Vector2):
 func _input(event):
 	if event.is_action_pressed("enter_vehicle"):
 		if nearby_truck and not in_truck:
-			nearby_truck.enter(self)
-			in_truck = true
+			if nearby_truck.is_broken:
+				nearby_truck.fix()
+			else:
+				nearby_truck.enter(self)
+				in_truck = true
 		elif in_truck and nearby_truck:
 			nearby_truck.exit()
 			in_truck = false
