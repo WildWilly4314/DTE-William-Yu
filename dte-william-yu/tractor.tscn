@@ -126,5 +126,13 @@ collision_mask = 3
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnterZone" unique_id=274652949]
 shape = SubResource("CircleShape2D_663fx")
 
+[node name="TimerLabel" type="Label" parent="." unique_id=1569064085]
+offset_left = -20.0
+offset_top = -84.0
+offset_right = 20.0
+offset_bottom = -61.0
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+
 [connection signal="body_entered" from="EnterZone" to="." method="_on_enter_zone_body_entered"]
 [connection signal="body_exited" from="EnterZone" to="." method="_on_enter_zone_body_exited"]

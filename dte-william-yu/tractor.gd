@@ -1,16 +1,28 @@
 extends CharacterBody2D
 
-const SPEED = 300
-const BREAK_CHANCE_ON_HIT = 0.15
+var SPEED = 300
+var BREAK_CHANCE_ON_HIT = 0.15
+const REPAIR_WAIT_TIME = 5.0
 
 var player_inside = false
 var player_ref = null
 var is_broken = false
+var repair_timer = 0.0
+var can_repair = false
+
+func _ready():
+	$TimerLabel.visible = false
 
 func _physics_process(delta):
 	if is_broken:
 		velocity = Vector2.ZERO
 		move_and_slide()
+		if not can_repair:
+			repair_timer -= delta
+			$TimerLabel.text = str(snapped(repair_timer, 0.01)) + "s"
+			if repair_timer <= 0:
+				can_repair = true
+				$TimerLabel.text = "Press F to fix!"
 		return
 	
 	if not player_inside:
@@ -20,7 +32,7 @@ func _physics_process(delta):
 	
 	if player_ref:
 		player_ref.global_position = global_position
-	
+
 	var input = Vector2.ZERO
 	input.x = Input.get_axis("ui_left", "ui_right")
 	input.y = Input.get_axis("ui_up", "ui_down")
@@ -55,7 +67,6 @@ func update_animation(dir: Vector2):
 
 func enter(player):
 	if is_broken:
-		print("Tractor is broken!")
 		return
 	player_inside = true
 	player_ref = player
@@ -74,26 +85,29 @@ func exit():
 func break_down():
 	if is_broken:
 		return
-	print("Tractor broke down!")
 	is_broken = true
+	can_repair = false
+	repair_timer = REPAIR_WAIT_TIME
+	$TimerLabel.visible = true
+	$TimerLabel.text = str(snapped(repair_timer, 0.01)) + "s"
 	if player_inside:
 		exit()
 	modulate = Color(1, 0.3, 0.3)
 
 func fix():
-	print("Tractor fixed!")
+	if not can_repair:
+		return
 	is_broken = false
+	can_repair = false
+	repair_timer = 0.0
+	$TimerLabel.visible = false
 	modulate = Color(1, 1, 1)
 
 func hit_by_vegetable():
 	if is_broken:
 		return
-	print("hit_by_vegetable called, rolling break chance...")
 	if randf() < BREAK_CHANCE_ON_HIT:
-		print("Break triggered!")
 		break_down()
-	else:
-		print("No break this time")
 
 func _on_enter_zone_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):

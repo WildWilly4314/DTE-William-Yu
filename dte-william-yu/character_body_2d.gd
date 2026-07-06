@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 150
+var SPEED = 150
 var nearby_truck = null
 var in_truck = false
 
