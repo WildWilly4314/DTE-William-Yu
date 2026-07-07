@@ -1,12 +1,12 @@
 extends CharacterBody2D
 
-const SPEED = 170
-const FLEE_RADIUS = 200.0
 const WANDER_SPEED = 60.0
 const WANDER_CHANGE_TIME = 2.0
+const RESPAWN_TIME = 15.0
 
 @export var money_value = 30
-@export var flee_speed = 120.0
+@export var flee_speed = 170.0
+var flee_radius = 200.0
 
 var player = null
 var dead = false
@@ -17,8 +17,12 @@ var popup_scene = preload("res://money_popup.tscn")
 
 func _ready():
 	player = get_tree().get_first_node_in_group("player")
+	add_to_group("vegetable")
 	randomize()
 	pick_new_wander_direction()
+
+func set_flee_radius(new_radius):
+	flee_radius = new_radius
 
 func pick_new_wander_direction():
 	var angle = randf() * TAU
@@ -36,7 +40,7 @@ func _physics_process(delta):
 	if tractor:
 		distance_to_tractor = global_position.distance_to(tractor.global_position)
 	
-	var should_flee = distance_to_player < FLEE_RADIUS or distance_to_tractor < FLEE_RADIUS
+	var should_flee = distance_to_player < flee_radius or distance_to_tractor < flee_radius
 	
 	if should_flee:
 		var flee_from = player.global_position
@@ -81,17 +85,25 @@ func die():
 	get_tree().get_root().get_node("Game").add_money(money_value)
 	
 	var tractor = get_tree().get_first_node_in_group("tractor")
-	print("Tractor found: ", tractor)
 	if tractor:
-		print("Calling hit_by_vegetable, break chance: ", tractor.BREAK_CHANCE_ON_HIT)
 		tractor.hit_by_vegetable()
 	
 	var popup = popup_scene.instantiate()
 	popup.global_position = global_position + Vector2(0, -30)
 	get_parent().add_child(popup)
 	
+	# Schedule respawn before disappearing
+	var my_scene = scene_file_path
+	var my_position = global_position
+	var game = get_tree().get_root().get_node("Game")
+	
 	await $AnimatedSprite2D.animation_finished
 	queue_free()
+	
+	# Respawn after delay
+	await get_tree().create_timer(RESPAWN_TIME).timeout
+	if is_instance_valid(game):
+		game.spawn_vegetable(my_scene, my_position)
 
 func _on_hit_zone_body_entered(body):
 	if body == self:

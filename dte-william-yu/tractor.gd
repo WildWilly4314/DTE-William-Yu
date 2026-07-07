@@ -1,8 +1,8 @@
 extends CharacterBody2D
 
-var SPEED = 300
+var SPEED = 300.0
 var BREAK_CHANCE_ON_HIT = 0.15
-const REPAIR_WAIT_TIME = 5.0
+var REPAIR_WAIT_TIME = 5.0
 
 var player_inside = false
 var player_ref = null
@@ -81,6 +81,15 @@ func exit():
 		player_ref.global_position = global_position + Vector2(60, 0)
 		player_ref = null
 	velocity = Vector2.ZERO
+
+func reset():
+	if player_inside:
+		exit()
+	is_broken = false
+	can_repair = false
+	repair_timer = 0.0
+	modulate = Color(1, 1, 1)
+	$TimerLabel.visible = false
 
 func break_down():
 	if is_broken:

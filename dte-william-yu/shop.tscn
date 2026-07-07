@@ -39,3 +39,11 @@ offset_right = 1093.0
 offset_bottom = 595.0
 theme_override_font_sizes/font_size = 31
 text = "Start Next Day"
+
+[node name="MoneyLabel" type="Label" parent="." unique_id=875995047]
+layout_mode = 0
+offset_left = 754.0
+offset_top = 86.0
+offset_right = 776.56885
+offset_bottom = 109.0
+scale = Vector2(3.5003948, 2.5660934)

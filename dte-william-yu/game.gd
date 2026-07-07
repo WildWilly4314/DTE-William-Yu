@@ -5,7 +5,11 @@ var day = 1
 var day_length = 60.0
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
+var tractor_start_position = Vector2.ZERO
 var shop_open = false
+var shop_instance = null
+
+var vegetable_data = []
 
 signal money_changed(new_amount)
 signal day_changed(new_day)
@@ -16,9 +20,26 @@ func _ready():
 	$HUD/MoneyLabel.text = "MONEY $" + str(money)
 	$HUD/DayLabel.text = "Day " + str(day)
 	$HUD/DayTimerLabel.text = "60s"
+	
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player_start_position = player.global_position
+	
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	if tractor:
+		tractor_start_position = tractor.global_position
+	
+	var vegetables = get_tree().get_nodes_in_group("vegetable")
+	for veg in vegetables:
+		vegetable_data.append({
+			"scene": veg.scene_file_path,
+			"position": veg.global_position
+		})
+	
+	shop_instance = shop_scene.instantiate()
+	shop_instance.shop_closed.connect(_on_shop_closed)
+	shop_instance.visible = false
+	$HUD.add_child(shop_instance)
 
 func _process(delta):
 	if shop_open:
@@ -35,13 +56,42 @@ func advance_day():
 	emit_signal("day_changed", day)
 	$HUD/DayLabel.text = "Day " + str(day)
 	show_day_popup()
-	reset_player_position()
+	reset_all_positions()
+	respawn_all_vegetables()
 	open_shop()
 
-func reset_player_position():
+func reset_all_positions():
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
+		if player.in_truck and player.nearby_truck:
+			player.nearby_truck.exit()
+		player.in_truck = false
+		player.nearby_truck = null
 		player.global_position = player_start_position
+		player.velocity = Vector2.ZERO
+	
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	if tractor:
+		tractor.global_position = tractor_start_position
+		tractor.velocity = Vector2.ZERO
+		tractor.reset()
+
+func respawn_all_vegetables():
+	var existing = get_tree().get_nodes_in_group("vegetable")
+	for veg in existing:
+		veg.queue_free()
+	
+	await get_tree().process_frame
+	
+	for data in vegetable_data:
+		spawn_vegetable(data["scene"], data["position"])
+
+func spawn_vegetable(scene_path: String, pos: Vector2):
+	var scene = load(scene_path)
+	if scene:
+		var veg = scene.instantiate()
+		veg.global_position = pos
+		add_child(veg)
 
 func show_day_popup():
 	var popup_scene = preload("res://day_popup.tscn")
@@ -51,26 +101,32 @@ func show_day_popup():
 
 func open_shop():
 	shop_open = true
-	var shop = shop_scene.instantiate()
-	shop.shop_closed.connect(_on_shop_closed)
-	$HUD.add_child(shop)
-	# Pause player and tractor
+	shop_instance.visible = true
+	shop_instance.refresh_ui()
+	
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.set_physics_process(false)
 	var tractor = get_tree().get_first_node_in_group("tractor")
 	if tractor:
 		tractor.set_physics_process(false)
+	var vegetables = get_tree().get_nodes_in_group("vegetable")
+	for veg in vegetables:
+		veg.set_physics_process(false)
 
 func _on_shop_closed():
 	shop_open = false
-	# Unpause player and tractor
+	shop_instance.visible = false
+	
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.set_physics_process(true)
 	var tractor = get_tree().get_first_node_in_group("tractor")
 	if tractor:
 		tractor.set_physics_process(true)
+	var vegetables = get_tree().get_nodes_in_group("vegetable")
+	for veg in vegetables:
+		veg.set_physics_process(true)
 
 func add_money(amount):
 	money += amount
