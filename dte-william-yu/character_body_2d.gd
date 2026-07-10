@@ -3,6 +3,7 @@ extends CharacterBody2D
 var SPEED = 150.0
 var nearby_truck = null
 var in_truck = false
+var last_direction = "down"
 
 func _physics_process(delta):
 	if in_truck:
@@ -20,6 +21,7 @@ func _physics_process(delta):
 		update_animation(input)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, 0.2)
+		stop_animation()
 	
 	move_and_slide()
 
@@ -27,12 +29,22 @@ func update_animation(dir: Vector2):
 	var anim = $AnimatedSprite2D
 	if dir.y < -0.5 and abs(dir.x) < 0.5:
 		anim.play("walk_up")
+		last_direction = "up"
 	elif dir.y > 0.5 and abs(dir.x) < 0.5:
 		anim.play("walk_down")
+		last_direction = "down"
 	elif dir.x < 0:
 		anim.play("walk_left")
+		last_direction = "left"
 	elif dir.x > 0:
 		anim.play("walk_right")
+		last_direction = "right"
+
+func stop_animation():
+	var anim = $AnimatedSprite2D
+	anim.stop()
+	anim.play("walk_" + last_direction)
+	anim.frame = 1
 
 func _input(event):
 	if event.is_action_pressed("enter_vehicle"):
