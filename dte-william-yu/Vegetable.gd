@@ -5,7 +5,7 @@ const WANDER_CHANGE_TIME = 2.0
 const RESPAWN_TIME = 15.0
 
 @export var money_value = 20
-@export var flee_speed = 120.0
+@export var flee_speed = 200
 var flee_radius = 200.0
 
 var player = null

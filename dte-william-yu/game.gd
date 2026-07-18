@@ -2,7 +2,7 @@ extends Node2D
 
 var money = 0
 var day = 1
-var day_length = 60.0
+var day_length = 60
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
 var tractor_start_position = Vector2.ZERO
@@ -20,6 +20,8 @@ func _ready():
 	$HUD/MoneyLabel.text = "MONEY $" + str(money)
 	$HUD/DayLabel.text = "Day " + str(day)
 	$HUD/DayTimerLabel.text = "60s"
+	$HUD/BlackScreen.modulate.a = 0
+	$HUD/BlackScreen.visible = true
 	
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
@@ -55,10 +57,35 @@ func advance_day():
 	day += 1
 	emit_signal("day_changed", day)
 	$HUD/DayLabel.text = "Day " + str(day)
-	show_day_popup()
+	
+	# Pause everything immediately
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.set_physics_process(false)
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	if tractor:
+		tractor.set_physics_process(false)
+	var vegetables = get_tree().get_nodes_in_group("vegetable")
+	for veg in vegetables:
+		veg.set_physics_process(false)
+	
+	# Fade to black
+	var tween = create_tween()
+	tween.tween_property($HUD/BlackScreen, "modulate:a", 1.0, 0.4)
+	await tween.finished
+	
+	# Reset everything while screen is black
 	reset_all_positions()
-	respawn_all_vegetables()
+	await respawn_all_vegetables()
+	
+	# Show day popup over black screen
+	show_day_popup()
+	await get_tree().create_timer(1.0).timeout
+	
+	# Fade black screen out to reveal shop
 	open_shop()
+	var tween2 = create_tween()
+	tween2.tween_property($HUD/BlackScreen, "modulate:a", 0.0, 0.4)
 
 func reset_all_positions():
 	var player = get_tree().get_first_node_in_group("player")
@@ -103,16 +130,6 @@ func open_shop():
 	shop_open = true
 	shop_instance.visible = true
 	shop_instance.refresh_ui()
-	
-	var player = get_tree().get_first_node_in_group("player")
-	if player:
-		player.set_physics_process(false)
-	var tractor = get_tree().get_first_node_in_group("tractor")
-	if tractor:
-		tractor.set_physics_process(false)
-	var vegetables = get_tree().get_nodes_in_group("vegetable")
-	for veg in vegetables:
-		veg.set_physics_process(false)
 
 func _on_shop_closed():
 	shop_open = false

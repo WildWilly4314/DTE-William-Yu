@@ -19,17 +19,20 @@ color = Color(0, 0, 0, 1)
 
 [node name="TitleLabel" type="Label" parent="." unique_id=899971512]
 layout_mode = 0
-offset_left = 313.0
-offset_top = 64.0
-offset_right = 859.0
-offset_bottom = 133.0
+offset_left = 382.0
+offset_top = 71.0
+offset_right = 928.0
+offset_bottom = 140.0
 theme_override_font_sizes/font_size = 49
 text = "End of Day Shop"
 
-[node name="UpgradeList" type="VBoxContainer" parent="." unique_id=532514435]
+[node name="UpgradeList" type="HBoxContainer" parent="." unique_id=1660455501]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 309.0
+offset_top = 224.0
+offset_right = 349.0
+offset_bottom = 264.0
+alignment = 1
 
 [node name="ContinueButton" type="Button" parent="." unique_id=338141265]
 layout_mode = 0
@@ -42,8 +45,9 @@ text = "Start Next Day"
 
 [node name="MoneyLabel" type="Label" parent="." unique_id=875995047]
 layout_mode = 0
-offset_left = 754.0
-offset_top = 86.0
-offset_right = 776.56885
-offset_bottom = 109.0
-scale = Vector2(3.5003948, 2.5660934)
+offset_left = 22.000061
+offset_top = 525.0
+offset_right = 34.00006
+offset_bottom = 572.708
+scale = Vector2(1.759, 1.746)
+theme_override_font_sizes/font_size = 20
