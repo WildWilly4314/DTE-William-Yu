@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bsdsyv3faro0w"]
+[gd_scene load_steps=14 format=3 uid="uid://bsdsyv3faro0w"]
 
 [ext_resource type="Script" uid="uid://b3lsi3o7ftakl" path="res://tractor.gd" id="1_663fx"]
 [ext_resource type="Texture2D" uid="uid://ulgej4fwuxbr" path="res://Green_BOXTRUCK_CLEAN_8D_000-sheet.png" id="1_aay1t"]
@@ -45,7 +45,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_663fx")
 }],
-"loop": 1,
+"loop": true,
 "name": &"bottom_left",
 "speed": 5.0
 }, {
@@ -53,7 +53,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_80l56")
 }],
-"loop": 1,
+"loop": true,
 "name": &"bottom_right",
 "speed": 5.0
 }, {
@@ -61,7 +61,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_wm41u")
 }],
-"loop": 1,
+"loop": true,
 "name": &"down",
 "speed": 5.0
 }, {
@@ -69,7 +69,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_8aiwu")
 }],
-"loop": 1,
+"loop": true,
 "name": &"left",
 "speed": 5.0
 }, {
@@ -77,7 +77,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_x8gov")
 }],
-"loop": 1,
+"loop": true,
 "name": &"right",
 "speed": 5.0
 }, {
@@ -85,7 +85,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_pwdsc")
 }],
-"loop": 1,
+"loop": true,
 "name": &"top_left",
 "speed": 5.0
 }, {
@@ -93,7 +93,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bf0jo")
 }],
-"loop": 1,
+"loop": true,
 "name": &"top_right",
 "speed": 5.0
 }, {
@@ -101,7 +101,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_cdwys")
 }],
-"loop": 1,
+"loop": true,
 "name": &"up",
 "speed": 5.0
 }]
@@ -109,24 +109,24 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_663fx"]
 radius = 61.0082
 
-[node name="Tractor" type="CharacterBody2D" unique_id=753581827 groups=["tractor"]]
+[node name="Tractor" type="CharacterBody2D" groups=["tractor"]]
 script = ExtResource("1_663fx")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=918264224]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_80l56")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=815513030]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_62euu")
 animation = &"bottom_left"
 
-[node name="EnterZone" type="Area2D" parent="." unique_id=80581063]
+[node name="EnterZone" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 3
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnterZone" unique_id=274652949]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnterZone"]
 shape = SubResource("CircleShape2D_663fx")
 
-[node name="TimerLabel" type="Label" parent="." unique_id=1569064085]
+[node name="TimerLabel" type="Label" parent="."]
 offset_left = -20.0
 offset_top = -84.0
 offset_right = 20.0

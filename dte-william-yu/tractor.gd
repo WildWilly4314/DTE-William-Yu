@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 var SPEED = 300.0
-var BREAK_CHANCE_ON_HIT = 0.15
+var BREAK_CHANCE_ON_HIT = 0.1
 var REPAIR_WAIT_TIME = 5.0
 
 var player_inside = false

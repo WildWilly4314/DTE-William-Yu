@@ -339,7 +339,7 @@ radius = 17.0
 height = 38.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_284bo"]
-size = Vector2(83.7771, 83.6799)
+size = Vector2(101.945, 110.123)
 
 [node name="vegetable mushroom" type="CharacterBody2D"]
 scale = Vector2(0.878699, 0.796579)

@@ -1,21 +1,21 @@
-[gd_scene format=3 uid="uid://cipx62nqt4kea"]
+[gd_scene load_steps=2 format=3 uid="uid://cipx62nqt4kea"]
 
 [ext_resource type="Script" uid="uid://b6b15nt342fr1" path="res://day_popup.gd" id="1_sykk7"]
 
-[node name="DayPopup" type="Control" unique_id=1165570357]
+[node name="DayPopup" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_sykk7")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=185419502]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="." unique_id=2085471609]
+[node name="Label" type="Label" parent="."]
 layout_mode = 0
 offset_left = 566.0
 offset_top = 280.0
