@@ -45,13 +45,24 @@ var all_upgrades = {
 	}
 }
 
+var fields = {
+	"field2": {
+		"name": "Field 2",
+		"description": "Unlock a new farming area!",
+		"cost": 250,
+		"unlocked": false
+	}
+}
+
 var todays_upgrades = []
 var upgrade_buttons = {}
+var field_buttons = {}
 
 func _ready():
 	$ContinueButton.pressed.connect(_on_continue_pressed)
 	pick_todays_upgrades()
 	build_upgrade_ui()
+	build_field_ui()
 	refresh_ui()
 
 func pick_todays_upgrades():
@@ -71,16 +82,13 @@ func build_upgrade_ui():
 	for key in todays_upgrades:
 		var data = all_upgrades[key]
 
-		# Outer card panel
 		var panel = PanelContainer.new()
 		panel.custom_minimum_size = Vector2(180, 260)
 
-		# Inner VBox
 		var vbox = VBoxContainer.new()
 		vbox.add_theme_constant_override("separation", 12)
 		panel.add_child(vbox)
 
-		# Upgrade name
 		var name_label = Label.new()
 		name_label.text = data["name"]
 		name_label.add_theme_font_size_override("font_size", 18)
@@ -88,7 +96,6 @@ func build_upgrade_ui():
 		name_label.autowrap_mode = TextServer.AUTOWRAP_WORD
 		vbox.add_child(name_label)
 
-		# Description
 		var desc_label = Label.new()
 		desc_label.text = data["description"]
 		desc_label.add_theme_font_size_override("font_size", 14)
@@ -96,14 +103,12 @@ func build_upgrade_ui():
 		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD
 		vbox.add_child(desc_label)
 
-		# Level label
 		var level_label = Label.new()
 		level_label.name = key + "_level"
 		level_label.add_theme_font_size_override("font_size", 13)
 		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		vbox.add_child(level_label)
 
-		# Buy button
 		var buy_button = Button.new()
 		buy_button.name = key + "_button"
 		buy_button.custom_minimum_size = Vector2(140, 50)
@@ -117,10 +122,49 @@ func build_upgrade_ui():
 			"button": buy_button
 		}
 
+func build_field_ui():
+	for child in $FieldList.get_children():
+		child.queue_free()
+	field_buttons.clear()
+
+	for key in fields:
+		var data = fields[key]
+
+		var panel = PanelContainer.new()
+		panel.custom_minimum_size = Vector2(200, 150)
+
+		var vbox = VBoxContainer.new()
+		vbox.add_theme_constant_override("separation", 10)
+		panel.add_child(vbox)
+
+		var name_label = Label.new()
+		name_label.text = data["name"]
+		name_label.add_theme_font_size_override("font_size", 18)
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		vbox.add_child(name_label)
+
+		var desc_label = Label.new()
+		desc_label.text = data["description"]
+		desc_label.add_theme_font_size_override("font_size", 13)
+		desc_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+		vbox.add_child(desc_label)
+
+		var buy_button = Button.new()
+		buy_button.name = key + "_field_button"
+		buy_button.custom_minimum_size = Vector2(160, 50)
+		buy_button.add_theme_font_size_override("font_size", 15)
+		buy_button.pressed.connect(_on_field_buy_pressed.bind(key))
+		vbox.add_child(buy_button)
+
+		$FieldList.add_child(panel)
+		field_buttons[key] = buy_button
+
 func refresh_ui():
 	var money = get_tree().get_root().get_node("Game").money
 	$MoneyLabel.text = "Your Money: $" + str(money)
 
+	# Upgrades
 	for key in todays_upgrades:
 		if not upgrade_buttons.has(key):
 			continue
@@ -138,6 +182,19 @@ func refresh_ui():
 			button.text = "Buy - $" + str(cost)
 			button.disabled = money < cost
 
+	# Fields
+	for key in fields:
+		if not field_buttons.has(key):
+			continue
+		var data = fields[key]
+		var button = field_buttons[key]
+		if data["unlocked"]:
+			button.text = "✓ Unlocked"
+			button.disabled = true
+		else:
+			button.text = "Unlock - $" + str(data["cost"])
+			button.disabled = money < data["cost"]
+
 func _on_buy_pressed(key):
 	var game = get_tree().get_root().get_node("Game")
 	var cost = get_cost(key)
@@ -145,6 +202,15 @@ func _on_buy_pressed(key):
 		game.add_money(-cost)
 		all_upgrades[key]["level"] += 1
 		apply_upgrade(key)
+		refresh_ui()
+
+func _on_field_buy_pressed(key):
+	var game = get_tree().get_root().get_node("Game")
+	var data = fields[key]
+	if game.money >= data["cost"] and not data["unlocked"]:
+		game.add_money(-data["cost"])
+		data["unlocked"] = true
+		game.unlock_field(key)
 		refresh_ui()
 
 func apply_upgrade(key):
