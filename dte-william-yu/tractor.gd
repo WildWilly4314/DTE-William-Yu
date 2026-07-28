@@ -1,7 +1,7 @@
 extends CharacterBody2D
 
 var SPEED = 300.0
-var BREAK_CHANCE_ON_HIT = 0.1
+var BREAK_CHANCE_ON_HIT = 0.15
 var REPAIR_WAIT_TIME = 5.0
 
 var player_inside = false
@@ -24,26 +24,26 @@ func _physics_process(delta):
 				can_repair = true
 				$TimerLabel.text = "Press F to fix!"
 		return
-	
+
 	if not player_inside:
 		velocity = Vector2.ZERO
 		move_and_slide()
 		return
-	
+
 	if player_ref:
 		player_ref.global_position = global_position
 
 	var input = Vector2.ZERO
 	input.x = Input.get_axis("ui_left", "ui_right")
 	input.y = Input.get_axis("ui_up", "ui_down")
-	
+
 	if input != Vector2.ZERO:
 		input = input.normalized()
 		velocity = input * SPEED
 		update_animation(input)
 	else:
 		velocity = velocity.lerp(Vector2.ZERO, 0.2)
-	
+
 	move_and_slide()
 
 func update_animation(dir: Vector2):
@@ -78,7 +78,10 @@ func exit():
 	if player_ref:
 		player_ref.visible = true
 		player_ref.set_physics_process(true)
-		player_ref.global_position = global_position + Vector2(60, 0)
+		var exit_offset = -velocity.normalized() * 80
+		if exit_offset == Vector2.ZERO:
+			exit_offset = Vector2(-80, 0)
+		player_ref.global_position = global_position + exit_offset
 		player_ref = null
 	velocity = Vector2.ZERO
 
