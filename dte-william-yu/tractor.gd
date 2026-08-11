@@ -4,11 +4,20 @@ var SPEED = 300.0
 var BREAK_CHANCE_ON_HIT = 0.15
 var REPAIR_WAIT_TIME = 5.0
 
+const DASH_SPEED = 1200
+const DASH_DURATION = 0.2
+const DASH_COOLDOWN = 2.0
+
 var player_inside = false
 var player_ref = null
 var is_broken = false
 var repair_timer = 0.0
 var can_repair = false
+
+var is_dashing = false
+var dash_timer = 0.0
+var dash_cooldown_timer = 0.0
+var dash_direction = Vector2.ZERO
 
 func _ready():
 	$TimerLabel.visible = false
@@ -33,9 +42,38 @@ func _physics_process(delta):
 	if player_ref:
 		player_ref.global_position = global_position
 
+	# Count down dash cooldown
+	if dash_cooldown_timer > 0:
+		dash_cooldown_timer -= delta
+
+	# Count down active dash
+	if is_dashing:
+		dash_timer -= delta
+		velocity = dash_direction * DASH_SPEED
+		move_and_slide()
+		if dash_timer <= 0:
+			is_dashing = false
+		return
+
 	var input = Vector2.ZERO
 	input.x = Input.get_axis("ui_left", "ui_right")
 	input.y = Input.get_axis("ui_up", "ui_down")
+
+	# Dash input
+	if Input.is_action_just_pressed("dash") and dash_cooldown_timer <= 0:
+		if input != Vector2.ZERO:
+			dash_direction = input.normalized()
+		else:
+			dash_direction = Vector2.DOWN
+		is_dashing = true
+		dash_timer = DASH_DURATION
+		dash_cooldown_timer = DASH_COOLDOWN
+		# Visual feedback - flash white
+		modulate = Color(1.5, 1.5, 1.5)
+		await get_tree().create_timer(0.1).timeout
+		if not is_broken:
+			modulate = Color(1, 1, 1)
+		return
 
 	if input != Vector2.ZERO:
 		input = input.normalized()
@@ -91,6 +129,9 @@ func reset():
 	is_broken = false
 	can_repair = false
 	repair_timer = 0.0
+	is_dashing = false
+	dash_timer = 0.0
+	dash_cooldown_timer = 0.0
 	modulate = Color(1, 1, 1)
 	$TimerLabel.visible = false
 

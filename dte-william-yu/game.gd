@@ -22,6 +22,7 @@ func _ready():
 	$HUD/DayTimerLabel.text = "60s"
 	$HUD/BlackScreen.modulate.a = 0
 	$HUD/BlackScreen.visible = true
+	$HUD/DashLabel.text = ""
 
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
@@ -52,6 +53,13 @@ func _process(delta):
 	if day_timer >= day_length:
 		day_timer = 0.0
 		advance_day()
+
+	# Update dash label every frame from game.gd
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	if tractor and tractor.player_inside:
+		update_dash_label(tractor.dash_cooldown_timer, tractor.is_dashing)
+	else:
+		$HUD/DashLabel.text = ""
 
 func advance_day():
 	day += 1
@@ -143,11 +151,17 @@ func _on_shop_closed():
 func unlock_field(key: String):
 	if key == "field2":
 		var field = $Field2
-		# Hide the lock overlay
 		field.get_node("ColorRect").visible = false
-		# Remove the wall
 		if field.has_node("LockWall"):
 			field.get_node("LockWall").queue_free()
+
+func update_dash_label(cooldown: float, dashing: bool):
+	if dashing:
+		$HUD/DashLabel.text = "DASHING!"
+	elif cooldown > 0:
+		$HUD/DashLabel.text = "Dash: " + str(snapped(cooldown, 0.1)) + "s"
+	else:
+		$HUD/DashLabel.text = "Dash: Ready!"
 
 func add_money(amount):
 	money += amount
