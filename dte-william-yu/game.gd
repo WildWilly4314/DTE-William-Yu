@@ -1,6 +1,6 @@
 extends Node2D
 
-var money = 0
+var money = 120.0
 var day = 1
 var day_length = 30.0
 var day_timer = 0.0
@@ -9,12 +9,19 @@ var tractor_start_position = Vector2.ZERO
 var shop_open = false
 var shop_instance = null
 
+const BASE_MONEY_GOAL = 200
+const DAY_CYCLE = 5
+
 var vegetable_data = []
 
 signal money_changed(new_amount)
 signal day_changed(new_day)
 
 var shop_scene = preload("res://shop.tscn")
+var game_over_scene = preload("res://game_over.tscn")
+
+func get_current_goal() -> int:
+	return (int(day / DAY_CYCLE) + 1) * BASE_MONEY_GOAL
 
 func _ready():
 	$HUD/MoneyLabel.text = "MONEY $" + str(money)
@@ -23,6 +30,7 @@ func _ready():
 	$HUD/BlackScreen.modulate.a = 0
 	$HUD/BlackScreen.visible = true
 	$HUD/DashLabel.text = ""
+	update_goal_label()
 
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
@@ -44,6 +52,12 @@ func _ready():
 	shop_instance.visible = false
 	$HUD.add_child(shop_instance)
 
+func update_goal_label():
+	if $HUD.has_node("GoalLabel"):
+		var next_check = (int(day / DAY_CYCLE) + 1) * DAY_CYCLE
+		var next_goal = (int(day / DAY_CYCLE) + 1) * BASE_MONEY_GOAL
+		$HUD/GoalLabel.text = "Goal: $" + str(next_goal) + " by Day " + str(next_check)
+
 func _process(delta):
 	if shop_open:
 		return
@@ -54,7 +68,6 @@ func _process(delta):
 		day_timer = 0.0
 		advance_day()
 
-	# Update dash label every frame from game.gd
 	var tractor = get_tree().get_first_node_in_group("tractor")
 	if tractor and tractor.player_inside:
 		update_dash_label(tractor.dash_cooldown_timer, tractor.is_dashing)
@@ -62,9 +75,19 @@ func _process(delta):
 		$HUD/DashLabel.text = ""
 
 func advance_day():
+	if day % DAY_CYCLE == 0:
+		var goal = (int(day / DAY_CYCLE)) * BASE_MONEY_GOAL
+		if money < goal:
+			show_game_over()
+			return
+		else:
+			add_money(-goal)
+			show_payment_popup(goal)
+
 	day += 1
 	emit_signal("day_changed", day)
 	$HUD/DayLabel.text = "Day " + str(day)
+	update_goal_label()
 
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
@@ -89,6 +112,37 @@ func advance_day():
 	open_shop()
 	var tween2 = create_tween()
 	tween2.tween_property($HUD/BlackScreen, "modulate:a", 0.0, 0.4)
+
+func show_payment_popup(amount: int):
+	var label = Label.new()
+	label.text = "-$" + str(amount) + " (Day " + str(day) + " tax!)"
+	label.add_theme_font_size_override("font_size", 32)
+	label.add_theme_color_override("font_color", Color(1, 0.2, 0.2))
+	label.set_anchors_preset(Control.PRESET_CENTER)
+	$HUD.add_child(label)
+	var tween = create_tween()
+	tween.tween_property(label, "position", label.position + Vector2(0, -80), 1.5)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.5)
+	tween.tween_callback(label.queue_free)
+
+func show_game_over():
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		player.set_physics_process(false)
+	var tractor = get_tree().get_first_node_in_group("tractor")
+	if tractor:
+		tractor.set_physics_process(false)
+	var vegetables = get_tree().get_nodes_in_group("vegetable")
+	for veg in vegetables:
+		veg.set_physics_process(false)
+
+	var tween = create_tween()
+	tween.tween_property($HUD/BlackScreen, "modulate:a", 1.0, 0.5)
+	await tween.finished
+
+	var game_over = game_over_scene.instantiate()
+	game_over.set_stats(day, money)
+	$HUD.add_child(game_over)
 
 func reset_all_positions():
 	var player = get_tree().get_first_node_in_group("player")
@@ -121,6 +175,15 @@ func spawn_vegetable(scene_path: String, pos: Vector2):
 	if scene:
 		var veg = scene.instantiate()
 		veg.global_position = pos
+		add_child(veg)
+
+func respawn_single_vegetable(scene_path: String, pos: Vector2, money_val: int, flee_spd: float):
+	var scene = load(scene_path)
+	if scene:
+		var veg = scene.instantiate()
+		veg.global_position = pos
+		veg.money_value = money_val
+		veg.flee_speed = flee_spd
 		add_child(veg)
 
 func show_day_popup():

@@ -54,7 +54,7 @@ theme_override_font_sizes/font_size = 20
 
 [node name="FieldList" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 340.0
-offset_top = 420.0
-offset_right = 380.0
-offset_bottom = 460.0
+offset_left = 873.0
+offset_top = 221.0
+offset_right = 913.0
+offset_bottom = 261.0
