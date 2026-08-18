@@ -47,16 +47,18 @@ var all_upgrades = {
 
 var fields = {
 	"field2": {
-		"name": "Field 2",
-		"description": "Unlock a new farming area!",
+		"name": "Snow Biome",
+		"description": "Unlock the snow farming area!",
 		"cost": 250,
 		"unlocked": false
 	}
 }
 
+var selected_spawn = "default"
 var todays_upgrades = []
 var upgrade_buttons = {}
 var field_buttons = {}
+var spawn_buttons = {}
 
 func _ready():
 	$ContinueButton.pressed.connect(_on_continue_pressed)
@@ -126,7 +128,9 @@ func build_field_ui():
 	for child in $FieldList.get_children():
 		child.queue_free()
 	field_buttons.clear()
+	spawn_buttons.clear()
 
+	# Field unlock buttons
 	for key in fields:
 		var data = fields[key]
 
@@ -160,11 +164,59 @@ func build_field_ui():
 		$FieldList.add_child(panel)
 		field_buttons[key] = buy_button
 
+	# Spawn selector section
+	var spawn_panel = PanelContainer.new()
+	spawn_panel.custom_minimum_size = Vector2(200, 180)
+
+	var spawn_vbox = VBoxContainer.new()
+	spawn_vbox.add_theme_constant_override("separation", 10)
+	spawn_panel.add_child(spawn_vbox)
+
+	var spawn_title = Label.new()
+	spawn_title.text = "Spawn Location"
+	spawn_title.add_theme_font_size_override("font_size", 18)
+	spawn_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	spawn_vbox.add_child(spawn_title)
+
+	var default_btn = Button.new()
+	default_btn.name = "DefaultSpawnBtn"
+	default_btn.text = "🌿 Default Field"
+	default_btn.custom_minimum_size = Vector2(160, 50)
+	default_btn.add_theme_font_size_override("font_size", 15)
+	default_btn.pressed.connect(_on_spawn_selected.bind("default"))
+	spawn_vbox.add_child(default_btn)
+	spawn_buttons["default"] = default_btn
+
+	var snow_btn = Button.new()
+	snow_btn.name = "SnowSpawnBtn"
+	snow_btn.text = "❄️ Snow Biome"
+	snow_btn.custom_minimum_size = Vector2(160, 50)
+	snow_btn.add_theme_font_size_override("font_size", 15)
+	snow_btn.pressed.connect(_on_spawn_selected.bind("snow"))
+	snow_btn.disabled = not fields["field2"]["unlocked"]
+	spawn_vbox.add_child(snow_btn)
+	spawn_buttons["snow"] = snow_btn
+
+	$FieldList.add_child(spawn_panel)
+	update_spawn_buttons()
+
+func update_spawn_buttons():
+	for key in spawn_buttons:
+		var btn = spawn_buttons[key]
+		if key == selected_spawn:
+			btn.modulate = Color(0.5, 1.0, 0.5)
+		else:
+			btn.modulate = Color(1, 1, 1)
+
+func _on_spawn_selected(spawn: String):
+	selected_spawn = spawn
+	get_tree().get_root().get_node("Game").selected_spawn = spawn
+	update_spawn_buttons()
+
 func refresh_ui():
 	var money = get_tree().get_root().get_node("Game").money
 	$MoneyLabel.text = "Your Money: $" + str(money)
 
-	# Upgrades
 	for key in todays_upgrades:
 		if not upgrade_buttons.has(key):
 			continue
@@ -182,7 +234,6 @@ func refresh_ui():
 			button.text = "Buy - $" + str(cost)
 			button.disabled = money < cost
 
-	# Fields
 	for key in fields:
 		if not field_buttons.has(key):
 			continue
@@ -194,6 +245,10 @@ func refresh_ui():
 		else:
 			button.text = "Unlock - $" + str(data["cost"])
 			button.disabled = money < data["cost"]
+
+	# Update snow spawn button availability
+	if spawn_buttons.has("snow"):
+		spawn_buttons["snow"].disabled = not fields["field2"]["unlocked"]
 
 func _on_buy_pressed(key):
 	var game = get_tree().get_root().get_node("Game")
@@ -212,6 +267,8 @@ func _on_field_buy_pressed(key):
 		data["unlocked"] = true
 		game.unlock_field(key)
 		refresh_ui()
+		# Rebuild to enable spawn button
+		build_field_ui()
 
 func apply_upgrade(key):
 	var level = all_upgrades[key]["level"]

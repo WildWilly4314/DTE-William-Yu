@@ -1,13 +1,14 @@
 extends Node2D
 
-var money = 120.0
+var money = 90000
 var day = 1
-var day_length = 30.0
+var day_length = 5.0
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
 var tractor_start_position = Vector2.ZERO
 var shop_open = false
 var shop_instance = null
+var selected_spawn = "default"
 
 const BASE_MONEY_GOAL = 200
 const DAY_CYCLE = 5
@@ -74,6 +75,14 @@ func _process(delta):
 	else:
 		$HUD/DashLabel.text = ""
 
+func update_dash_label(cooldown: float, dashing: bool):
+	if dashing:
+		$HUD/DashLabel.text = "DASHING!"
+	elif cooldown > 0:
+		$HUD/DashLabel.text = "Dash: " + str(snapped(cooldown, 0.1)) + "s"
+	else:
+		$HUD/DashLabel.text = "Dash: Ready!"
+
 func advance_day():
 	if day % DAY_CYCLE == 0:
 		var goal = (int(day / DAY_CYCLE)) * BASE_MONEY_GOAL
@@ -103,7 +112,6 @@ func advance_day():
 	tween.tween_property($HUD/BlackScreen, "modulate:a", 1.0, 0.4)
 	await tween.finished
 
-	reset_all_positions()
 	await respawn_all_vegetables()
 
 	show_day_popup()
@@ -112,6 +120,28 @@ func advance_day():
 	open_shop()
 	var tween2 = create_tween()
 	tween2.tween_property($HUD/BlackScreen, "modulate:a", 0.0, 0.4)
+
+func get_spawn_position() -> Vector2:
+	match selected_spawn:
+		"snow":
+			if has_node("SnowSpawn"):
+				return $SnowSpawn.global_position
+			return Vector2(2500, 400)
+		_:
+			if has_node("DefaultSpawn"):
+				return $DefaultSpawn.global_position
+			return player_start_position
+
+func get_tractor_spawn_position() -> Vector2:
+	match selected_spawn:
+		"snow":
+			if has_node("SnowSpawn"):
+				return $SnowSpawn.global_position + Vector2(100, 0)
+			return Vector2(2600, 400)
+		_:
+			if has_node("DefaultSpawn"):
+				return $DefaultSpawn.global_position + Vector2(100, 0)
+			return tractor_start_position
 
 func show_payment_popup(amount: int):
 	var label = Label.new()
@@ -145,18 +175,21 @@ func show_game_over():
 	$HUD.add_child(game_over)
 
 func reset_all_positions():
+	var spawn_pos = get_spawn_position()
+	var tractor_pos = get_tractor_spawn_position()
+
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		if player.in_truck and player.nearby_truck:
 			player.nearby_truck.exit()
 		player.in_truck = false
 		player.nearby_truck = null
-		player.global_position = player_start_position
+		player.global_position = spawn_pos
 		player.velocity = Vector2.ZERO
 
 	var tractor = get_tree().get_first_node_in_group("tractor")
 	if tractor:
-		tractor.global_position = tractor_start_position
+		tractor.global_position = tractor_pos
 		tractor.velocity = Vector2.ZERO
 		tractor.reset()
 
@@ -201,6 +234,9 @@ func _on_shop_closed():
 	shop_open = false
 	shop_instance.visible = false
 
+	# Reset positions AFTER shop closes so spawn choice is applied
+	reset_all_positions()
+
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
 		player.set_physics_process(true)
@@ -217,14 +253,6 @@ func unlock_field(key: String):
 		field.get_node("ColorRect").visible = false
 		if field.has_node("LockWall"):
 			field.get_node("LockWall").queue_free()
-
-func update_dash_label(cooldown: float, dashing: bool):
-	if dashing:
-		$HUD/DashLabel.text = "DASHING!"
-	elif cooldown > 0:
-		$HUD/DashLabel.text = "Dash: " + str(snapped(cooldown, 0.1)) + "s"
-	else:
-		$HUD/DashLabel.text = "Dash: Ready!"
 
 func add_money(amount):
 	money += amount
