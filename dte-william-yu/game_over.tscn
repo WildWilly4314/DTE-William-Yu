@@ -1,21 +1,21 @@
-[gd_scene format=3 uid="uid://r46ytws1x4ls"]
+[gd_scene load_steps=2 format=3 uid="uid://r46ytws1x4ls"]
 
 [ext_resource type="Script" uid="uid://buwacevaq7mfe" path="res://game_over.gd" id="1_y26ei"]
 
-[node name="GameOver" type="Control" unique_id=1093250830]
+[node name="GameOver" type="Control"]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("1_y26ei")
 
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1882543774]
+[node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 0
 offset_right = 1152.0
 offset_bottom = 648.0
 color = Color(0, 0, 0, 1)
 
-[node name="TitleLabel" type="Label" parent="." unique_id=652792249]
+[node name="TitleLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 440.0
 offset_top = 272.0
@@ -24,7 +24,7 @@ offset_bottom = 335.0
 theme_override_font_sizes/font_size = 45
 text = "GAMEOVER"
 
-[node name="ReasonLabel" type="Label" parent="." unique_id=1540756885]
+[node name="ReasonLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 386.0
 offset_top = 340.0
@@ -32,7 +32,7 @@ offset_right = 750.0
 offset_bottom = 363.0
 text = "You failed to earn $200 in 5 days. Holy bum bro."
 
-[node name="RestartButton" type="Button" parent="." unique_id=383753604]
+[node name="RestartButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 522.0
 offset_top = 405.0
@@ -40,7 +40,7 @@ offset_right = 603.0
 offset_bottom = 436.0
 text = "Try Again"
 
-[node name="HighScoreLabel" type="Label" parent="." unique_id=25538524]
+[node name="HighScoreLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 389.0
 offset_top = 524.0
