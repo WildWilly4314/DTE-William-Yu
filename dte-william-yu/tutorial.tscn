@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bc54y7n6m16y2"]
+[gd_scene format=3 uid="uid://bc54y7n6m16y2"]
 
 [ext_resource type="Script" uid="uid://d2gu6qrotvej5" path="res://tutorial.gd" id="1_7n6eb"]
 
-[node name="Tutorial" type="Control"]
+[node name="Tutorial" type="Control" unique_id=328945335]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,24 +11,33 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7n6eb")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1340087274]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=228683051]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 scale = Vector2(28.88, 16.44)
-color = Color(0, 0, 0, 1)
+mouse_filter = 2
+color = Color(0, 0, 0, 0.5882353)
 
-[node name="TitleLabel" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="NextButton" type="Button" parent="CanvasLayer" unique_id=618071983]
+offset_left = 350.0
+offset_top = 419.99997
+offset_right = 358.0
+offset_bottom = 427.99997
 
-[node name="BodyLabel" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="TitleLabel" type="Label" parent="CanvasLayer" unique_id=1142285989]
+offset_left = 350.0
+offset_top = 220.0
+offset_right = 390.0
+offset_bottom = 243.0
 
-[node name="NextButton" type="Button" parent="."]
-layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+[node name="BodyLabel" type="Label" parent="CanvasLayer" unique_id=1605355091]
+custom_minimum_size = Vector2(450, 0)
+offset_left = 350.0
+offset_top = 280.0
+offset_right = 800.0
+offset_bottom = 303.0

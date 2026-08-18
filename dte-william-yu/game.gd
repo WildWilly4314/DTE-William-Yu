@@ -1,8 +1,8 @@
 extends Node2D
 
-var money = 90000
+var money = 0
 var day = 1
-var day_length = 30
+var day_length = 2
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
 var tractor_start_position = Vector2.ZERO

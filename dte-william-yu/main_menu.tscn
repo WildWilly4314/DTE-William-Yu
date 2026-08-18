@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://7q2m2h1xgscc"]
+
+[ext_resource type="Script" uid="uid://bx0lrr6krci8l" path="res://main_menu.gd" id="1_06t4h"]
+[ext_resource type="Texture2D" uid="uid://bc0p5sr8axeqb" path="res://New Piskel.png" id="2_7vrkn"]
+[ext_resource type="VideoStream" uid="uid://duv88re6s2417" path="res://Err Err.ogv" id="3_fu7sn"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fu7sn"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 0, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jix8l"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 648, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_glbon"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 1296, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nlkkf"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 1944, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qe12f"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 2592, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8qtwp"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(0, 3240, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dy7ct"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(1152, 0, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0o4t1"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(1152, 648, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0k4wn"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(1152, 1296, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j5v2v"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(1152, 1944, 1152, 648)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iotk1"]
+atlas = ExtResource("2_7vrkn")
+region = Rect2(1152, 2592, 1152, 648)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_g4v7s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fu7sn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jix8l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_glbon")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nlkkf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qe12f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8qtwp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dy7ct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0o4t1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0k4wn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j5v2v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iotk1")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="MainMenu" type="Control" unique_id=852890517]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_06t4h")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1621269898]
+position = Vector2(569, 326)
+sprite_frames = SubResource("SpriteFrames_g4v7s")
+autoplay = "default"
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="." unique_id=1951432573]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_right = -432.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2
+stream = ExtResource("3_fu7sn")
+loop = true
+
+[node name="Label" type="Label" parent="." unique_id=1657391208]
+layout_mode = 0
+offset_left = 414.0
+offset_top = 153.0
+offset_right = 503.0
+offset_bottom = 198.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "Farm!"
+
+[node name="StartButton" type="Button" parent="." unique_id=1826674961]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 0
+offset_left = 500.0
+offset_top = 300.0
+offset_right = 508.0
+offset_bottom = 308.0
+text = "Start"
+
+[node name="ExitButton" type="Button" parent="." unique_id=2087810707]
+custom_minimum_size = Vector2(200, 50)
+layout_mode = 0
+offset_left = 500.0
+offset_top = 370.0
+offset_right = 508.0
+offset_bottom = 378.0
+text = "Exit 😔😔😔😔😔🥺🥺🥺🥺🥀🥀🥀🤔🤔🙏"
+
+[node name="PlayVideoButton" type="Button" parent="." unique_id=1424408141]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
