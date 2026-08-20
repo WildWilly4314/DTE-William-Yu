@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://cwrk65mcx11vk"]
+[gd_scene load_steps=17 format=3 uid="uid://cwrk65mcx11vk"]
 
 [ext_resource type="Script" uid="uid://dt6auoi3igpft" path="res://character_body_2d.gd" id="1_ij6vw"]
 [ext_resource type="Texture2D" uid="uid://b7ybeid3foy7y" path="res://vectoraith_tileset_farming_sim_essentials/32x32/Sprites/$farmer_32x32.png" id="2_ghijl"]
@@ -63,7 +63,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4sjlk")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk_down",
 "speed": 10.0
 }, {
@@ -77,7 +77,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_1kp85")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk_left",
 "speed": 10.0
 }, {
@@ -91,7 +91,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_k85er")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk_right",
 "speed": 10.0
 }, {
@@ -105,7 +105,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_lhvu3")
 }],
-"loop": 1,
+"loop": true,
 "name": &"walk_up",
 "speed": 10.0
 }]
@@ -114,17 +114,17 @@ animations = [{
 radius = 13.0
 height = 42.0
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=2121364237 groups=["player"]]
+[node name="CharacterBody2D" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_ij6vw")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1950964464]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -13)
 sprite_frames = SubResource("SpriteFrames_4sjlk")
 animation = &"walk_down"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1529846542]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_qp52p")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1277032060]
+[node name="Camera2D" type="Camera2D" parent="."]
