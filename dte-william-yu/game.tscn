@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dg3fd8tfb736n" path="res://vegetable_mushroom.tscn" id="9_vef74"]
 [ext_resource type="PackedScene" uid="uid://dpvccs81ipi1l" path="res://Chombomb.tscn" id="10_hve3p"]
 [ext_resource type="PackedScene" uid="uid://cyw46j2xo4klb" path="res://SnowBomb.tscn" id="12_iotsf"]
+[ext_resource type="AudioStream" uid="uid://cmnyb5yipk850" path="res://kaazoom-my-banjo-and-me-bluegrass-409664.mp3" id="14_215e1"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fc0e3"]
 texture = ExtResource("1_e2o6t")
@@ -7186,7 +7187,6 @@ tile_map_data = PackedByteArray("AACAAOL/AAACAAAAAACAAOP/AAACAAAAAACAAOT/AAACAAA
 tile_set = SubResource("TileSet_215e1")
 
 [node name="ColorRect" type="ColorRect" parent="Field2" unique_id=663364948]
-visible = false
 z_index = 1
 z_as_relative = false
 offset_left = 2063.0
@@ -7228,7 +7228,6 @@ tile_map_data = PackedByteArray("AADV/2gAAAAAAAIAAADV/2kAAAAAAAIAAADV/2oAAAAAAAI
 tile_set = SubResource("TileSet_7sc4i")
 
 [node name="ColorRect" type="ColorRect" parent="Field3" unique_id=45871398]
-visible = false
 z_index = 1
 offset_left = -693.0
 offset_top = 1634.0
@@ -7520,3 +7519,7 @@ position = Vector2(2258, 129)
 
 [node name="Field3Spawn" type="Marker2D" parent="." unique_id=1565448620]
 position = Vector2(178, 1818)
+
+[node name="Music" type="AudioStreamPlayer2D" parent="." unique_id=1692037763]
+stream = ExtResource("14_215e1")
+max_distance = 10000000.0

@@ -2,7 +2,7 @@ extends Node2D
 
 var money = 0
 var day = 1
-var day_length = 30.0
+var day_length = 30
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
 var tractor_start_position = Vector2.ZERO
@@ -32,6 +32,10 @@ func _ready():
 	$HUD/BlackScreen.visible = true
 	$HUD/DashLabel.text = ""
 	update_goal_label()
+
+	# Start music
+	$Music.stream.loop = true
+	$Music.play()
 
 	var player = get_tree().get_first_node_in_group("player")
 	if player:
@@ -174,6 +178,8 @@ func show_game_over():
 	for veg in vegetables:
 		veg.set_physics_process(false)
 
+	$Music.stop()
+
 	var tween = create_tween()
 	tween.tween_property($HUD/BlackScreen, "modulate:a", 1.0, 0.5)
 	await tween.finished
@@ -237,10 +243,12 @@ func open_shop():
 	shop_open = true
 	shop_instance.visible = true
 	shop_instance.refresh_ui()
+	$Music.stream_paused = true
 
 func _on_shop_closed():
 	shop_open = false
 	shop_instance.visible = false
+	$Music.stream_paused = false
 
 	reset_all_positions()
 
