@@ -51,6 +51,12 @@ var fields = {
 		"description": "Unlock the snow farming area!",
 		"cost": 250,
 		"unlocked": false
+	},
+	"field3": {
+		"name": "Forest Biome",
+		"description": "Unlock the forest farming area!",
+		"cost": 950,
+		"unlocked": false
 	}
 }
 
@@ -130,7 +136,6 @@ func build_field_ui():
 	field_buttons.clear()
 	spawn_buttons.clear()
 
-	# Field unlock buttons
 	for key in fields:
 		var data = fields[key]
 
@@ -164,9 +169,9 @@ func build_field_ui():
 		$FieldList.add_child(panel)
 		field_buttons[key] = buy_button
 
-	# Spawn selector section
+	# Spawn selector
 	var spawn_panel = PanelContainer.new()
-	spawn_panel.custom_minimum_size = Vector2(200, 180)
+	spawn_panel.custom_minimum_size = Vector2(200, 220)
 
 	var spawn_vbox = VBoxContainer.new()
 	spawn_vbox.add_theme_constant_override("separation", 10)
@@ -181,8 +186,8 @@ func build_field_ui():
 	var default_btn = Button.new()
 	default_btn.name = "DefaultSpawnBtn"
 	default_btn.text = "🌿 Default Field"
-	default_btn.custom_minimum_size = Vector2(160, 50)
-	default_btn.add_theme_font_size_override("font_size", 15)
+	default_btn.custom_minimum_size = Vector2(160, 45)
+	default_btn.add_theme_font_size_override("font_size", 14)
 	default_btn.pressed.connect(_on_spawn_selected.bind("default"))
 	spawn_vbox.add_child(default_btn)
 	spawn_buttons["default"] = default_btn
@@ -190,12 +195,22 @@ func build_field_ui():
 	var snow_btn = Button.new()
 	snow_btn.name = "SnowSpawnBtn"
 	snow_btn.text = "❄️ Snow Biome"
-	snow_btn.custom_minimum_size = Vector2(160, 50)
-	snow_btn.add_theme_font_size_override("font_size", 15)
+	snow_btn.custom_minimum_size = Vector2(160, 45)
+	snow_btn.add_theme_font_size_override("font_size", 14)
 	snow_btn.pressed.connect(_on_spawn_selected.bind("snow"))
 	snow_btn.disabled = not fields["field2"]["unlocked"]
 	spawn_vbox.add_child(snow_btn)
 	spawn_buttons["snow"] = snow_btn
+
+	var forest_btn = Button.new()
+	forest_btn.name = "ForestSpawnBtn"
+	forest_btn.text = "🌲 Forest Biome"
+	forest_btn.custom_minimum_size = Vector2(160, 45)
+	forest_btn.add_theme_font_size_override("font_size", 14)
+	forest_btn.pressed.connect(_on_spawn_selected.bind("forest"))
+	forest_btn.disabled = not fields["field3"]["unlocked"]
+	spawn_vbox.add_child(forest_btn)
+	spawn_buttons["forest"] = forest_btn
 
 	$FieldList.add_child(spawn_panel)
 	update_spawn_buttons()
@@ -246,9 +261,12 @@ func refresh_ui():
 			button.text = "Unlock - $" + str(data["cost"])
 			button.disabled = money < data["cost"]
 
-	# Update snow spawn button availability
 	if spawn_buttons.has("snow"):
 		spawn_buttons["snow"].disabled = not fields["field2"]["unlocked"]
+	if spawn_buttons.has("forest"):
+		spawn_buttons["forest"].disabled = not fields["field3"]["unlocked"]
+
+	update_spawn_buttons()
 
 func _on_buy_pressed(key):
 	var game = get_tree().get_root().get_node("Game")
@@ -267,8 +285,6 @@ func _on_field_buy_pressed(key):
 		data["unlocked"] = true
 		game.unlock_field(key)
 		refresh_ui()
-		# Rebuild to enable spawn button
-		build_field_ui()
 
 func apply_upgrade(key):
 	var level = all_upgrades[key]["level"]

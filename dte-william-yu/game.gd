@@ -2,7 +2,7 @@ extends Node2D
 
 var money = 0
 var day = 1
-var day_length = 30
+var day_length = 30.0
 var day_timer = 0.0
 var player_start_position = Vector2.ZERO
 var tractor_start_position = Vector2.ZERO
@@ -127,6 +127,10 @@ func get_spawn_position() -> Vector2:
 			if has_node("SnowSpawn"):
 				return $SnowSpawn.global_position
 			return Vector2(2500, 400)
+		"forest":
+			if has_node("Field3Spawn"):
+				return $Field3Spawn.global_position
+			return Vector2(4000, 400)
 		_:
 			if has_node("DefaultSpawn"):
 				return $DefaultSpawn.global_position
@@ -138,6 +142,10 @@ func get_tractor_spawn_position() -> Vector2:
 			if has_node("SnowSpawn"):
 				return $SnowSpawn.global_position + Vector2(100, 0)
 			return Vector2(2600, 400)
+		"forest":
+			if has_node("Field3Spawn"):
+				return $Field3Spawn.global_position + Vector2(100, 0)
+			return Vector2(4100, 400)
 		_:
 			if has_node("DefaultSpawn"):
 				return $DefaultSpawn.global_position + Vector2(100, 0)
@@ -234,7 +242,6 @@ func _on_shop_closed():
 	shop_open = false
 	shop_instance.visible = false
 
-	# Reset positions AFTER shop closes so spawn choice is applied
 	reset_all_positions()
 
 	var player = get_tree().get_first_node_in_group("player")
@@ -248,11 +255,17 @@ func _on_shop_closed():
 		veg.set_physics_process(true)
 
 func unlock_field(key: String):
-	if key == "field2":
-		var field = $Field2
-		field.get_node("ColorRect").visible = false
-		if field.has_node("LockWall"):
-			field.get_node("LockWall").queue_free()
+	match key:
+		"field2":
+			var field2 = $Field2
+			field2.get_node("ColorRect").visible = false
+			if field2.has_node("LockWall"):
+				field2.get_node("LockWall").queue_free()
+		"field3":
+			var field3 = $Field3
+			field3.get_node("ColorRect").visible = false
+			if field3.has_node("StaticBody2D"):
+				field3.get_node("StaticBody2D").queue_free()
 
 func add_money(amount):
 	money += amount
